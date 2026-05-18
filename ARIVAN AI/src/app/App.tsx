@@ -43,6 +43,7 @@ const cn = (...classes: (string | undefined | null | false)[]) => classes.filter
 export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,6 +52,63 @@ export default function App() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Intersection Observer for scroll tracking
+  useEffect(() => {
+    const sections = ["features", "solutions", "dashboard", "stem"];
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -55% 0px", // triggers when section is in the main reading pane
+      threshold: 0.1,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+
+    return () => {
+      sections.forEach((id) => {
+        const element = document.getElementById(id);
+        if (element) observer.unobserve(element);
+      });
+    };
+  }, []);
+
+  const navItems = [
+    { id: "features", label: "Platform", href: "#features" },
+    { id: "solutions", label: "Solutions", href: "#solutions" },
+    { id: "dashboard", label: "AI Dashboard", href: "#dashboard" },
+    { id: "stem", label: "STEM Labs", href: "#stem" },
+  ];
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    setActiveSection(id);
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80; // Height of the sticky navbar
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] font-inter text-slate-800 overflow-x-hidden">
@@ -80,10 +138,26 @@ export default function App() {
             </div>
             
             <div className="hidden lg:flex items-center gap-8 font-medium text-sm">
-              <a href="#features" className="text-slate-600 hover:text-[#204E27] transition-colors">Platform</a>
-              <a href="#solutions" className="text-slate-600 hover:text-[#204E27] transition-colors">Solutions</a>
-              <a href="#dashboard" className="text-slate-600 hover:text-[#204E27] transition-colors">AI Dashboard</a>
-              <a href="#stem" className="text-slate-600 hover:text-[#204E27] transition-colors">STEM Labs</a>
+              {navItems.map((item) => (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  className={cn(
+                    "relative py-2 px-1 transition-colors duration-300 text-sm font-semibold tracking-wide",
+                    activeSection === item.id ? "text-[#204E27]" : "text-slate-600 hover:text-[#204E27]"
+                  )}
+                  onClick={(e) => handleNavClick(e, item.id)}
+                >
+                  {item.label}
+                  {activeSection === item.id && (
+                    <motion.span
+                      layoutId="activeNavIndicator"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#204E27] to-[#EE9318] rounded-full"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </a>
+              ))}
               <div className="w-px h-4 bg-slate-300"></div>
               <button className="text-slate-700 hover:text-[#204E27] font-semibold transition-colors">Login</button>
               <button className="px-6 py-2.5 rounded-full bg-[#204E27] text-white hover:bg-[#163920] transition-all shadow-md hover:shadow-xl font-medium">
@@ -96,6 +170,75 @@ export default function App() {
             </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setMobileMenuOpen(false)}
+                className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden"
+              />
+              {/* Menu Panel */}
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", bounce: 0.05, duration: 0.35 }}
+                className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-sm bg-white p-6 shadow-2xl flex flex-col justify-between lg:hidden"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-3">
+                      <img src={arivanLogo} alt="ARIVAN AI" className="h-10 w-auto object-contain" />
+                      <div className="flex flex-col">
+                        <span className="font-poppins font-bold text-lg text-[#214D28] leading-tight">ARIVAN AI</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="p-2 rounded-full hover:bg-slate-100 text-slate-700 transition-colors"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    {navItems.map((item) => (
+                      <a
+                        key={item.id}
+                        href={item.href}
+                        className={cn(
+                          "flex items-center justify-between py-3 px-4 rounded-xl font-semibold transition-all duration-300",
+                          activeSection === item.id
+                            ? "text-[#204E27] bg-[#204E27]/5 border-l-4 border-[#204E27]"
+                            : "text-slate-600 hover:text-[#204E27] hover:bg-slate-50"
+                        )}
+                        onClick={(e) => handleNavClick(e, item.id)}
+                      >
+                        {item.label}
+                        <ChevronRight className={cn("w-4 h-4 transition-transform", activeSection === item.id ? "text-[#204E27] translate-x-1" : "text-slate-400")} />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 mt-8 pt-6 border-t border-slate-100">
+                  <button className="w-full py-3 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition-colors">
+                    Login
+                  </button>
+                  <button className="w-full py-3 rounded-xl bg-[#204E27] text-white font-semibold hover:bg-[#163920] transition-colors shadow-md">
+                    Book Free Demo
+                  </button>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Content */}
@@ -205,7 +348,7 @@ export default function App() {
       </section>
 
       {/* 2. SCHOOL PROBLEMS SECTION */}
-      <section className="py-24 bg-white relative">
+      <section id="solutions" className="py-24 bg-white relative">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
