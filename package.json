@@ -1,0 +1,8 @@
+{
+  "name": "project-root",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix \"ARIVAN AI\" run build",
+    "dev": "npm --prefix \"ARIVAN AI\" run dev"
+  }
+}
