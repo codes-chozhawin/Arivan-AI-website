@@ -188,4 +188,32 @@
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
+
+  /* Custom premium slim scrollbars (Ash thumb only, no track) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d4d4d8; /* Mild ash color (zinc-300) */
+    border-radius: 9999px;
+    border: 2px solid transparent; /* Creates space around the thumb */
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a1a1aa; /* Slightly darker ash on hover */
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #d4d4d8 transparent;
+  }
 }

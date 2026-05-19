@@ -357,38 +357,50 @@ export const StemLabSection = () => {
   return (
     <section id="stem" className="py-24 bg-slate-50 font-inter relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+        <div className="flex flex-col lg:flex-row justify-between items-center mb-10 gap-6">
           <div>
             <h2 className="text-sm font-bold text-[#ee9318] uppercase tracking-wider mb-2">Brochure</h2>
             <h3 className="text-4xl font-poppins font-bold text-slate-900">STEM Innovation Lab Program</h3>
           </div>
           
-          {/* Pagination Controls */}
-          <div className="flex items-center gap-6 bg-white px-8 py-4 rounded-full shadow-md border border-slate-200">
+          {/* Descriptive Top Tab Menu */}
+          <div 
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="flex items-center justify-between bg-white p-1.5 sm:p-2 rounded-2xl shadow-lg border border-slate-100 w-full sm:w-[680px] shrink-0 overflow-x-auto [&::-webkit-scrollbar]:hidden"
+          >
             <button 
               onClick={prevPage}
               disabled={currentPage === 1}
-              className="p-2 rounded-full hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shrink-0"
             >
-              <ChevronLeft className="w-6 h-6 text-slate-700" />
+              <ChevronLeft className="w-5 h-5 text-slate-700" />
             </button>
-            <div className="flex gap-3">
-              {[1, 2, 3, 4].map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`w-3 h-3 rounded-full transition-all ${
-                    currentPage === page ? 'bg-[#204e27] scale-125' : 'bg-slate-300 hover:bg-slate-400'
-                  }`}
-                />
-              ))}
-            </div>
+            
+            {[
+              { id: 1, label: "Cover Page" },
+              { id: 2, label: "What is STEM Lab?" },
+              { id: 3, label: "Benefits" },
+              { id: 4, label: "Why Choose Us" }
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setCurrentPage(item.id)}
+                className={`px-3 sm:px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-300 shrink-0 whitespace-nowrap ${
+                  currentPage === item.id 
+                    ? 'bg-[#204e27] text-white shadow-md' 
+                    : 'text-slate-600 hover:text-[#ee9318] hover:bg-slate-50'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+            
             <button 
               onClick={nextPage}
               disabled={currentPage === totalPages}
-              className="p-2 rounded-full hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shrink-0"
             >
-              <ChevronRight className="w-6 h-6 text-slate-700" />
+              <ChevronRight className="w-5 h-5 text-slate-700" />
             </button>
           </div>
         </div>
