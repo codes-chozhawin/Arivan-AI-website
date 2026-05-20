@@ -119,7 +119,16 @@ export default function App() {
               <a href="#stem-lab" onClick={(e) => { e.preventDefault(); navigateTo('stem-lab'); }} className={cn("transition-colors", currentView === 'stem-lab' ? "text-[#EE9318] font-semibold" : "text-slate-600 hover:text-[#EE9318]")}>STEM LABS</a>
               <a href="#pricing" onClick={(e) => { e.preventDefault(); navigateTo('home', '#pricing'); }} className="text-slate-600 hover:text-[#EE9318] transition-colors">Pricing</a>
               <div className="w-px h-4 bg-slate-300"></div>
-              <button className="text-slate-700 hover:text-[#EE9318] font-semibold transition-colors">Login</button>
+              {/* <button className="text-slate-700 hover:text-[#EE9318] font-semibold transition-colors">Login</button> */}
+              
+              
+            <button
+  onClick={() => window.location.href = "/app"}
+              className="text-slate-700 hover:text-[#EE9318] font-semibold transition-colors"
+            >
+              Login
+            </button>
+
               <button className="px-6 py-2.5 rounded-full bg-[#EE9318] text-white hover:bg-[#d68212] transition-all shadow-md hover:shadow-xl font-medium">
                 Book Free Demo
               </button>
