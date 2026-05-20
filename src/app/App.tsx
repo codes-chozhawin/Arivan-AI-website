@@ -123,7 +123,7 @@ export default function App() {
               
               
             <button
-  onClick={() => window.location.href = "/app"}
+              onClick={() => window.location.href = "https://arivanai.com/app/"}
               className="text-slate-700 hover:text-[#EE9318] font-semibold transition-colors"
             >
               Login
